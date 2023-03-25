@@ -7,20 +7,22 @@ from config import PARAMETERS
 from sklearn import svm
 import matplotlib.pyplot as plt
 
-def get_fft_factor(pred):
-    return (pred[50]-pred[49])/pred[49]
+SPARK_SENTIMENT_MODEL = 0.1
+
+def get_fft_factor(pred, window):
+    return (pred[window]-pred[window-1])/pred[window-1]
 
 
-def analyze(prices_50, sent_50, sent_fac, fft_fac, results):
+def analyze(prices_50, sent_50, sent_fac, fft_fac, results, window):
     a = 0.8
     b = 0.2
     fft_pred = fft_model.predict(prices_50)
     sent_factor = sentiment_model.predict(sent_50)
-    fft_factor = get_fft_factor(fft_pred)
+    fft_factor = get_fft_factor(fft_pred, window)
     if len(results) > 100:
         clf = svm.SVC(kernel='linear')  # Linear Kernel
         X_train = pd.DataFrame({'fft': fft_fac, 'sent': sent_fac})
-        clf.fit(X_train.tail(50), pd.Series(results).tail(50))
+        clf.fit(X_train.tail(window), pd.Series(results).tail(window))
         #colors = {0: 'red', 1: 'blue'}
         #plt.scatter(X_train['fft'].tail(50), X_train['sent'].tail(50), c=pd.Series(results).tail(50).map(colors))
         #plt.show()

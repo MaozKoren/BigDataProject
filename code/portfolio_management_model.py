@@ -31,9 +31,9 @@ def implement(dec):
             with open(PORTFOLIO, "w") as outfile:
                 json.dump(dictionary, outfile)
 
-def get_results(dec,actual_price):
+def get_results(dec,actual_price, window):
     pred = dec[5]
-    diff = (actual_price - pred[50])/actual_price
+    diff = (actual_price - pred[window])/actual_price
     return diff
 def get_outcome(last,next):
     diff = 1 if (next - last) > 0 else 0

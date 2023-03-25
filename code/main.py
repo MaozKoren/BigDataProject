@@ -12,7 +12,7 @@ sentiment_df = pd.read_csv(DATA_STREAM)
 sentences = sentiment_df['Sentence']
 #parameters:
 start = 0
-window = 50 #time frame
+window = 40 #time frame
 results = []
 fft_factors = []
 sent_factors = []
@@ -21,12 +21,12 @@ outcomes = []
 #if __name__ == '__main__':
 # for batch in range(0, round(len(close_prices))-1):
 for batch in range(0, 285):
-    decision = ensemble_model.analyze(close_prices[start:start+window], sentiment_df[start:start+window], fft_factors, sent_factors, outcomes)
+    decision = ensemble_model.analyze(close_prices[start:start+window], sentiment_df[start:start+window], fft_factors, sent_factors, outcomes, window)
     decisions.append(decision[0])
     fft_factors.append(decision[3])
     sent_factors.append(decision[4])
     portfolio_management_model.implement(decision)
-    result = portfolio_management_model.get_results(decision, close_prices[start+window+1])
+    result = portfolio_management_model.get_results(decision, close_prices[start+window+1], window)
     results.append(result)
     outcome = portfolio_management_model.get_outcome(close_prices[start + window], close_prices[start + window + 1])
     outcomes.append(outcome)
@@ -39,6 +39,8 @@ print('test')
 # plt.show()
 
 print("Accuracy:", metrics.accuracy_score(outcomes[100:], decisions[100:]))
+
+
 
 acc = []
 for i in range(0, 185):
